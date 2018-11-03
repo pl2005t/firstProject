@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+			http://www.springframework.org/schema/beans
+			http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+			http://www.springframework.org/schema/context
+			http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+			
+			
+			<!-- 加载数据库配置文件 -->
+			<context:property-placeholder location="classpath:db.properties"/>
+			<!--数据源，dbcp  -->
+			<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+			<!--jdbc:mysql://localhost:3306/user?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true -->
+			<!-- spring里配置数据源时要用driverClassName，不能用driver -->
+				<property name="driverClassName" value="${jdbc.driver}" />  
+				<property name="url" value="${jdbc.url}" />
+				<property name="username" value="${jdbc.username}" />
+				<property name="password" value="${jdbc.password}" />
+			</bean>
+			
+			
+			<!-- sqlSessionFactory -->
+			<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+			<!--数据源  -->
+			<property name="dataSource" ref="dataSource"/>	
+			<!--  加载mybatis的配置文件-->
+			<property name="configLocation" value="classpath:mybatis/SqlMapConfig.xml"/>
+					
+			</bean>
+		
+			<!--mapper的批量扫描，从mapper包中扫描mapper接口，自动创建代理对象并且注入spring容器  
+			MapperScannerConfigurer:进行mapper扫描
+			-->
+			<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+			<!--指定扫描的包名  
+			规范：将mapper.java和mapper.xml的名称保持一致，并且在同一目录下
+			如果扫描多个包，每个包中间使用半角逗号分隔
+			-->
+			<property name="basePackage" value="cn.pl.ssm.mapper"/>
+			<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+			</bean>
+			</beans>
