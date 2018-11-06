@@ -53,6 +53,9 @@
 	<context:component-scan
 		base-package="cn.pl.ssm.controller" />
 
+<!-- 静态资源的解析 包括js,css,img等-->
+<mvc:resources location="/js/" mapping="/js/**"/>
+<mvc:resources location="/image/" mapping="/image/**"/>
 
 	<!--可以代替注解映射器和注解适配器 -->
 	<mvc:annotation-driven
